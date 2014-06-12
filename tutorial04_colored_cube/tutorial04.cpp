@@ -224,11 +224,21 @@ int main( void )
 
 	// create and bind the vertex color buffer.
 	GLuint colorbuffer;
-	glGenBuffers(1, &colorbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 
 	do{
+
+		srand (time(NULL));
+
+		for (int v = 0; v < 12*3 ; v++) {
+			g_color_buffer_data[3*v+0] = rand() % 100 / 100.0;
+			g_color_buffer_data[3*v+1] = rand() % 100 / 100.0;
+			g_color_buffer_data[3*v+2] = rand() % 100 / 100.0;
+		}
+
+		glGenBuffers(1, &colorbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
