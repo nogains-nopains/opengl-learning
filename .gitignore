@@ -8,6 +8,11 @@ build/
 3rdparty/soil/projects/VC9/Debug/CL.write.1.tlog
 3rdparty/soil/projects/VC9/Debug/image_DXT.obj
 3rdparty/soil/projects/VC9/Debug/image_helper.obj
+**/Debug
+Debug/
+*~
+*.swp
+misc05_picking/misc05_picking_BulletPhysics.exe
 3rdparty/soil/projects/VC9/Debug/lib.command.1.tlog
 3rdparty/soil/projects/VC9/Debug/Lib-link.read.1.tlog
 3rdparty/soil/projects/VC9/Debug/Lib-link.write.1.tlog

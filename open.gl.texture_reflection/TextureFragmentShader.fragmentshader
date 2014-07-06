@@ -1,0 +1,18 @@
+#version 330 core
+
+in vec3 Color;
+in vec2 Texcoord;
+out vec4 outColor;
+uniform sampler2D texKitten;
+uniform sampler2D texPuppy;
+uniform float time;
+void main() {
+	float factor = (sin(time * 3.0) + 1.0) / 2.0;
+	if (Texcoord.y < 0.5) 
+		outColor = mix(texture(texKitten, vec2(Texcoord.x, Texcoord.y*2)), texture(texPuppy, vec2(Texcoord.x, Texcoord.y*2)), factor);
+	else
+	{
+        float f = sin(Texcoord.y *60.0 + time * 2.0) / 30.0;
+	    outColor = mix(texture(texKitten, vec2(Texcoord.x+f, 2*(1 - Texcoord.y) )), texture(texPuppy, vec2(Texcoord.x+f, 2*(1.0 - Texcoord.y)) ), factor);
+	}
+}
