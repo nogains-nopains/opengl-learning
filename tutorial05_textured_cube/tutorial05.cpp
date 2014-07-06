@@ -130,7 +130,7 @@ int main( void )
 	};
 
 	// Two UV coordinatesfor each vertex. They were created withe Blender.
-	static const GLfloat g_uv_buffer_data[] = { 
+	static GLfloat g_uv_buffer_data[] = { 
 		0.000059f, 1.0f-0.000004f, 
 		0.000103f, 1.0f-0.336048f, 
 		0.335973f, 1.0f-0.335903f, 
@@ -174,6 +174,9 @@ int main( void )
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
+    for (int i = 0; i < 36 * 2; i = i+2) {
+        g_uv_buffer_data[i] = 1- g_uv_buffer_data[i];
+    }
 	GLuint uvbuffer;
 	glGenBuffers(1, &uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -202,7 +205,7 @@ int main( void )
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
 			0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
-			3,                  // size
+			3,                  // size : 3 floats for each vertex ==>g_vertex_buffer_data
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?
 			0,                  // stride
@@ -210,11 +213,13 @@ int main( void )
 		);
 
 		// 2nd attribute buffer : UVs
+        // Note that now we use buffer 2 for texture, in tutorial04 we used it for color. 
+        // Because we use texture now, so no need to use color anymore!
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 		glVertexAttribPointer(
 			1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-			2,                                // size : U+V => 2
+			2,                                // size : U+V => 2 floats ==>g_uv_buffer_data
 			GL_FLOAT,                         // type
 			GL_FALSE,                         // normalized?
 			0,                                // stride
