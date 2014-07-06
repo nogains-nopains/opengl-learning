@@ -209,4 +209,3 @@ GLuint loadDDS(const char * imagepath){
 
 
 }
-
