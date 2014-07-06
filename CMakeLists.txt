@@ -56,42 +56,7 @@ add_definitions(
 	-D_CRT_SECURE_NO_WARNINGS
 )
 
-# Tutorial open.gl
-add_executable(open.gl 
-	open.gl/triangle.cpp
-	common/shader.cpp
-	common/shader.hpp
-	
-	open.gl/SimpleFragmentShader.fragmentshader
-	open.gl/SimpleVertexShader.vertexshader
-)
-target_link_libraries(open.gl
-	${ALL_LIBS}
-)
 
-# Xcode and Visual working directories
-set_target_properties(open.gl PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl/")
-create_target_launcher(open.gl WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl/")
-create_default_target_launcher(open.gl WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl/") 
-
-#############################
-# Tutorial open.gl.triangle2
-add_executable(open.gl.triangle2 
-	open.gl.triangle2/triangle.cpp
-	common/shader.cpp
-	common/shader.hpp
-	
-	open.gl.triangle2/SimpleFragmentShader.fragmentshader
-	open.gl.triangle2/SimpleVertexShader.vertexshader
-)
-target_link_libraries(open.gl.triangle2
-	${ALL_LIBS}
-)
-
-# Xcode and Visual working directories
-set_target_properties(open.gl.triangle2 PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.triangle2/")
-create_target_launcher(open.gl.triangle2 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.triangle2/")
-create_default_target_launcher(open.gl.triangle2 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.triangle2/") 
 
 #############################
 # Tutorial open.gl.square
@@ -117,14 +82,11 @@ create_default_target_launcher(open.gl.square WORKING_DIRECTORY "${CMAKE_CURRENT
 # Tutorial open.gl.texture
 
 add_subdirectory (3rdparty/soil) 
-#add_library(SOIL SHARED open.gl.texture/*.c)
 
 add_executable(open.gl.texture
 	open.gl.texture/gltexture.cpp
 	common/shader.cpp
 	common/shader.hpp
-#	common/texture.cpp
-#	common/texture.hpp
 	
 	open.gl.texture/TransformVertexShader.vertexshader
 	open.gl.texture/TextureFragmentShader.fragmentshader
@@ -133,8 +95,6 @@ add_executable(open.gl.texture
 target_link_libraries(open.gl.texture
 	${ALL_LIBS}
 	SOIL
-#	C:/Users/Chenghai/Downloads/OpenGL-tutorial_v0014_33/OpenGL-tutorial_v0014_33/build/open.gl.texture.dir/Debug/SOIL.lib
-#	C:/Users/Chenghai/Downloads/OpenGL-tutorial_v0014_33/OpenGL-tutorial_v0014_33/3rdparty/soil/projects/VC9/Debug/SOIL.lib
 )
 # Xcode and Visual working directories
 set_target_properties(open.gl.texture PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture/")
@@ -825,24 +785,13 @@ add_custom_command(
 )
 
 add_custom_command(
-   TARGET open.gl POST_BUILD
-   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.exe" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl/open.gl.exe"
-)
-
-add_custom_command(
-   TARGET open.gl.triangle POST_BUILD
-   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.triangle.exe" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.triangle/open.gl.triangle.exe"
-)
-
-
-add_custom_command(
    TARGET open.gl.square POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.square.exe" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.square/open.gl.square.exe"
 )
 
 add_custom_command(
    TARGET open.gl.texture POST_BUILD
-   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARYG146_DIR}/${CMAKE_CFG_INTDIR}/open.gl.texture${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture/"
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.texture${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture/"
 )
 
 
