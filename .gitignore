@@ -2,3 +2,8 @@
 build/
 *.exe
 **/*.exe
+**/Debug
+Debug/
+*~
+*.swp
+misc05_picking/misc05_picking_BulletPhysics.exe
