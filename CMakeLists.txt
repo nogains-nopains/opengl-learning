@@ -191,6 +191,28 @@ set_target_properties(open.gl.texture_rotation PROPERTIES XCODE_ATTRIBUTE_CONFIG
 create_target_launcher(open.gl.texture_rotation WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture_rotation/")
 
 
+
+#############################
+# Tutorial open.gl.depthbuffer
+
+add_executable(open.gl.depthbuffer
+	open.gl.depthbuffer/gltexture_depth_buffer.cpp
+	common/shader.cpp
+	common/shader.hpp
+	
+	open.gl.depthbuffer/TransformVertexShader.vertexshader
+	open.gl.depthbuffer/TextureFragmentShader.fragmentshader
+)
+
+target_link_libraries(open.gl.depthbuffer
+	${ALL_LIBS}
+	SOIL
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.depthbuffer PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthbuffer/")
+create_target_launcher(open.gl.depthbuffer WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthbuffer/")
+
+
 #############################
 # Tutorial 1
 add_executable(tutorial01_first_window 
@@ -836,6 +858,11 @@ add_custom_command(
 add_custom_command(
    TARGET open.gl.texture_rotation POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.texture_rotation.exe" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture_rotation/"
+)
+
+add_custom_command(
+   TARGET open.gl.depthbuffer POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.depthbuffer${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthbuffer/"
 )
 
 add_custom_command(
