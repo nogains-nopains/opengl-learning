@@ -171,6 +171,27 @@ create_target_launcher(open.gl.texture_transform1 WORKING_DIRECTORY "${CMAKE_CUR
 
 
 #############################
+# Tutorial open.gl.texture_rotation
+
+add_executable(open.gl.texture_rotation
+	open.gl.texture_rotation/gltexture_rotation.cpp
+	common/shader.cpp
+	common/shader.hpp
+	
+	open.gl.texture_rotation/TransformVertexShader.vertexshader
+	open.gl.texture_rotation/TextureFragmentShader.fragmentshader
+)
+
+target_link_libraries(open.gl.texture_rotation
+	${ALL_LIBS}
+	SOIL
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.texture_rotation PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture_rotation/")
+create_target_launcher(open.gl.texture_rotation WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture_rotation/")
+
+
+#############################
 # Tutorial 1
 add_executable(tutorial01_first_window 
 	tutorial01_first_window/tutorial01.cpp
@@ -811,6 +832,11 @@ add_custom_command(
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.texture_transform1${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture_transform1/"
 )
 
+
+add_custom_command(
+   TARGET open.gl.texture_rotation POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.texture_rotation.exe" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.texture_rotation/"
+)
 
 add_custom_command(
    TARGET tutorial02_red_triangle POST_BUILD
