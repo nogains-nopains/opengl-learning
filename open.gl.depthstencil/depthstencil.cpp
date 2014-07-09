@@ -196,9 +196,9 @@ int main( void )
         glm::mat4 model; //  creates a new 4-by-4 matrix , which is the identity matrix by default. 
         model = glm::rotate(
             model,
-            (GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 80.0f,
+            (GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 180.0f,
             glm::vec3(0.0f, 0.0f, 1.0f)  //  rotation transformation of  clock()/CLOCKS_PER_SEC *180 degrees around the Z axis.
-            );
+        );
 
         GLint uniModel = glGetUniformLocation(programID, "model");
 
