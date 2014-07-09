@@ -61,7 +61,7 @@ int main( void )
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
-    //glDepthFunc(GL_LESS); 
+    glDepthFunc(GL_LESS); 
 
     // Create Vertex Array Object
     GLuint vao;
@@ -134,6 +134,9 @@ int main( void )
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 
+    
+    // Use our shader
+    glUseProgram(programID);
     // Load texture
     GLuint tex;
     glGenTextures(1, &tex);
@@ -170,10 +173,6 @@ int main( void )
     glEnableVertexAttribArray(texAttrib);
     glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
 
-    
-    // Use our shader
-    glUseProgram(programID);
-
     glm::mat4 view = glm::lookAt(
         glm::vec3(3.5f, 3.5f, 3.5f),
         glm::vec3(0.0f, 0.0f, 0.0f),
@@ -181,14 +180,10 @@ int main( void )
         );
     GLint uniView = glGetUniformLocation(programID, "view");
     glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
-
     glm::mat4 proj = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
     GLint uniProj = glGetUniformLocation(programID, "proj");
     glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-
-    // Calculate transformation
-    glm::mat4 model; //  creates a new 4-by-4 matrix , which is the identity matrix by default. 
-    
+   
     GLint uniColor = glGetUniformLocation(programID, "overrideColor");
 
     do{
@@ -196,18 +191,21 @@ int main( void )
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Calculate transformation
+        glm::mat4 model; //  creates a new 4-by-4 matrix , which is the identity matrix by default. 
         model = glm::rotate(
             model,
-            (GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC / 50.0f,
+            (float)clock() / (float)CLOCKS_PER_SEC * 80.0f, //!!! DON"T Change (float) to (GLFloat), it'll cause the angle be very large, so the model rotates very fast!!!
             glm::vec3(0.0f, 0.0f, 1.0f)  //  rotation transformation of  clock()/CLOCKS_PER_SEC *180 degrees around the Z axis.
         );
 
-         GLint uniModel = glGetUniformLocation(programID, "model");
-         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
- 
          // Draw cube
-          glDrawArrays(GL_TRIANGLES, 0, 36);
-  
+         GLint uniModel = glGetUniformLocation(programID, "model");
+         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model)); //must call immediately before glDrawArrays().
+         glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
+         glDrawArrays(GL_TRIANGLES, 0, 36);
+ 
+#if 1  
 glEnable(GL_STENCIL_TEST);
 
     // Draw floor
@@ -228,14 +226,17 @@ glEnable(GL_STENCIL_TEST);
         glm::translate(model, glm::vec3(0, 0, -1)),
         glm::vec3(1, 1, -1)
     );
-    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-
-        glUniform3f(uniColor, 0.3f, 0.3f, 0.3f);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
+    
+    // must enable the following, otherwise, the reflection will
+    // not be displayed!!!
+    // model has been changed, so need to call it again to pass
+    // the changed model to the shader!!!
+     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+     glUniform3f(uniColor, 0.3f, 0.3f, 0.3f);
+     glDrawArrays(GL_TRIANGLES, 0, 36);
 
 glDisable(GL_STENCIL_TEST);
-
+#endif
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();

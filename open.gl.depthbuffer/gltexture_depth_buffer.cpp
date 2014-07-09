@@ -176,17 +176,18 @@ int main( void )
     glEnableVertexAttribArray(texAttrib);
     glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
 
-glm::mat4 view = glm::lookAt(
+    glm::mat4 view = glm::lookAt(
     glm::vec3(3.5f, 3.5f, 3.5f),
     glm::vec3(0.0f, 0.0f, 0.0f),
     glm::vec3(0.0f, 0.0f, 1.0f)
-);
-GLint uniView = glGetUniformLocation(programID, "view");
-glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+    );
+    GLint uniView = glGetUniformLocation(programID, "view");
+    glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+    glm::mat4 proj = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
+    GLint uniProj = glGetUniformLocation(programID, "proj");
+    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
 
-glm::mat4 proj = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
-GLint uniProj = glGetUniformLocation(programID, "proj");
-glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
 
 	do{
 
