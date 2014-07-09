@@ -214,6 +214,27 @@ create_target_launcher(open.gl.depthbuffer WORKING_DIRECTORY "${CMAKE_CURRENT_SO
 
 
 #############################
+# Tutorial open.gl.depthstencil
+
+add_executable(open.gl.depthstencil
+	open.gl.depthstencil/depthstencil.cpp
+	common/shader.cpp
+	common/shader.hpp
+	
+	open.gl.depthstencil/TransformVertexShader.vertexshader
+	open.gl.depthstencil/TextureFragmentShader.fragmentshader
+)
+
+target_link_libraries(open.gl.depthstencil
+	${ALL_LIBS}
+	SOIL
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.depthstencil PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthstencil/")
+create_target_launcher(open.gl.depthstencil WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthstencil/")
+
+
+#############################
 # Tutorial 1
 add_executable(tutorial01_first_window 
 	tutorial01_first_window/tutorial01.cpp
@@ -864,6 +885,14 @@ add_custom_command(
    TARGET open.gl.depthbuffer POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.depthbuffer${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthbuffer/"
 )
+
+add_custom_command(
+   TARGET open.gl.depthstencil POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.depthstencil${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthstencil/"
+)
+
+
+
 
 add_custom_command(
    TARGET tutorial02_red_triangle POST_BUILD
