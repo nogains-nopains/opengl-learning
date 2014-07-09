@@ -120,13 +120,13 @@ int main( void )
         -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
 
-// plan
-     -1.0f, -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-     1.0f, -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-     1.0f,  1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-     1.0f,  1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-    -1.0f,  1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-    -1.0f, -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
+        // plan
+        -1.0f, -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        1.0f, -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        1.0f,  1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        1.0f,  1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };  
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
@@ -134,9 +134,12 @@ int main( void )
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 
-    
     // Use our shader
     glUseProgram(programID);
+    // @@@@@@@@@ VERY IMPORTANT @@@@@@@@@@@
+    // UseProgram must be called in the proper place, otherwise, the graphics can be very weird.
+    // for example, if we move this call to line 156, we'll get a flickering graphic!!!!
+
     // Load texture
     GLuint tex;
     glGenTextures(1, &tex);
@@ -150,8 +153,6 @@ int main( void )
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); //GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //GL_LINEAR);
-
-
 
     // Specify the layout of the vertex data
     GLint posAttrib = glGetAttribLocation(programID, "position");
@@ -183,7 +184,7 @@ int main( void )
     glm::mat4 proj = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
     GLint uniProj = glGetUniformLocation(programID, "proj");
     glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-   
+
     GLint uniColor = glGetUniformLocation(programID, "overrideColor");
 
     do{
@@ -195,47 +196,53 @@ int main( void )
         glm::mat4 model; //  creates a new 4-by-4 matrix , which is the identity matrix by default. 
         model = glm::rotate(
             model,
-            (float)clock() / (float)CLOCKS_PER_SEC * 80.0f, //!!! DON"T Change (float) to (GLFloat), it'll cause the angle be very large, so the model rotates very fast!!!
+            (GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 80.0f,
             glm::vec3(0.0f, 0.0f, 1.0f)  //  rotation transformation of  clock()/CLOCKS_PER_SEC *180 degrees around the Z axis.
-        );
+            );
 
-         // Draw cube
-         GLint uniModel = glGetUniformLocation(programID, "model");
-         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model)); //must call immediately before glDrawArrays().
-         glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
-         glDrawArrays(GL_TRIANGLES, 0, 36);
- 
+        GLint uniModel = glGetUniformLocation(programID, "model");
+
+        // @@@@@@@@@ VERY IMPORTANT @@@@@@@@@@@
+        // every time we changed the model, and immediately before we call Draw, we 
+        // should call the UniformMatrix to pass the changed model to the shader,
+        // otherwise, the draw will not reflect the current change!!!
+        glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));   
+        glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
+        // Draw cube
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
 #if 1  
-glEnable(GL_STENCIL_TEST);
+        glEnable(GL_STENCIL_TEST);
 
-    // Draw floor
-    glStencilFunc(GL_ALWAYS, 1, 0xFF); // Set any stencil to 1
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilMask(0xFF); // Write to stencil buffer
-    glDepthMask(GL_FALSE); // Don't write to depth buffer
-    glClear(GL_STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
+        // Draw floor
+        glStencilFunc(GL_ALWAYS, 1, 0xFF); // Set any stencil to 1
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glStencilMask(0xFF); // Write to stencil buffer
+        glDepthMask(GL_FALSE); // Don't write to depth buffer
+        glClear(GL_STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
 
-    glDrawArrays(GL_TRIANGLES, 36, 6);
+        glDrawArrays(GL_TRIANGLES, 36, 6);
 
-    // Draw cube reflection
-    glStencilFunc(GL_EQUAL, 1, 0xFF); // Pass test if stencil value is 1
-    glStencilMask(0x00); // Don't write anything to stencil buffer
-    glDepthMask(GL_TRUE); // Write to depth buffer
+        // Draw cube reflection
+        glStencilFunc(GL_EQUAL, 1, 0xFF); // Pass test if stencil value is 1
+        glStencilMask(0x00); // Don't write anything to stencil buffer
+        glDepthMask(GL_TRUE); // Write to depth buffer
 
-    model = glm::scale(
-        glm::translate(model, glm::vec3(0, 0, -1)),
-        glm::vec3(1, 1, -1)
-    );
-    
-    // must enable the following, otherwise, the reflection will
-    // not be displayed!!!
-    // model has been changed, so need to call it again to pass
-    // the changed model to the shader!!!
-     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-     glUniform3f(uniColor, 0.3f, 0.3f, 0.3f);
-     glDrawArrays(GL_TRIANGLES, 0, 36);
+        model = glm::scale(
+            glm::translate(model, glm::vec3(0, 0, -1)),
+            glm::vec3(1, 1, -1)
+            );
 
-glDisable(GL_STENCIL_TEST);
+        // @@@@@@@@@ VERY IMPORTANT @@@@@@@@@@@
+        // every time we changed the model, and immediately before we call Draw, we 
+        // should call the UniformMatrix to pass the changed model to the shader,
+        // otherwise, the draw will not reflect the current change!!!
+        // Try to comment the following glUniformMatrix4fv to see the diff.
+        glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform3f(uniColor, 0.3f, 0.3f, 0.3f);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glDisable(GL_STENCIL_TEST);
 #endif
         // Swap buffers
         glfwSwapBuffers(window);
