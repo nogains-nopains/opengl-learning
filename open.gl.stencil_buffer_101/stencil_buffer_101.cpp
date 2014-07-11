@@ -196,7 +196,7 @@ int main( void )
         glm::mat4 model; //  creates a new 4-by-4 matrix , which is the identity matrix by default. 
         model = glm::rotate(
             model,
-            (GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 180.0f,
+            45.0f, //(GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 180.0f,
             glm::vec3(0.0f, 0.0f, 1.0f)  //  rotation transformation of  clock()/CLOCKS_PER_SEC *180 degrees around the Z axis.
         );
 
@@ -211,39 +211,49 @@ int main( void )
         // Draw cube
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-#if 1  
-        glEnable(GL_STENCIL_TEST);
-
         // Draw floor
-        glStencilFunc(GL_ALWAYS, 1, 0xFF); // Set any stencil to 1
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glStencilMask(0xFF); // Write to stencil buffer
-        glDepthMask(GL_FALSE); // Don't write to depth buffer
-        glClear(GL_STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
+        glEnable(GL_STENCIL_TEST);
+        
+        // step 1 initialize the stencil buffer with the floor.
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); // disable colro buffer.
+        glDepthMask(GL_FALSE);                               // disable depth buffer. Don't allow write to the depth buffer!
 
-        glDrawArrays(GL_TRIANGLES, 36, 6);
+        glStencilFunc(GL_NEVER, 1, 0xFF);           // NEVER pass stencil test, 
+        glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);  // replace the stencil buffer values to ref (1).
+        glStencilMask(0xFF);                        // Let the setncil buffer free to write.
+        glClear(GL_STENCIL_BUFFER_BIT);             // Clear stencil buffer by writing the default stencil value (0 by default).
 
-        // Draw cube reflection
+        // using our model (square floor) to update the stencil buffer values.
+        glDrawArrays(GL_TRIANGLES, 36, 6);          // OK, at stencil shape pixel locations (we're using the square) in the 
+                                                    // stencil buffere replaces the stencil buffer values to ref = 1.
+        // Now the places where the square floor covers in the stencil buffer have value 1 (the ref), all other places have 
+        // value 0 (stencil clear value).
+
+        // step2: use the above initialized stencil buffer and stencil test to write only in the locations where stencil values is 1,
+        // e.g. those places covered by the squared floor.
+
+        // enable color and depth buffers.
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        glDepthMask(GL_TRUE); // Now allow to write to depth buffer
+
+        // no more modification of the stencil buffer on stencil and depth pass.
+        glStencilMask(0x00); // Don't allow write anything to stencil buffer, this can also be achieved by:
+                             // glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+        
+        // stencil test: only pass stencil test at stencilVlaue == 1,
+        // and write actual content to the depth and color buffer only at stencil shape locations.
         glStencilFunc(GL_EQUAL, 1, 0xFF); // Pass test if stencil value is 1
-        glStencilMask(0x00); // Don't write anything to stencil buffer
-        glDepthMask(GL_TRUE); // Write to depth buffer
 
         model = glm::scale(
             glm::translate(model, glm::vec3(0, 0, -1)),
             glm::vec3(1, 1, -1)
             );
-
-        // @@@@@@@@@ VERY IMPORTANT @@@@@@@@@@@
-        // every time we changed the model, and immediately before we call Draw, we 
-        // should call the UniformMatrix to pass the changed model to the shader,
-        // otherwise, the draw will not reflect the current change!!!
-        // Try to comment the following glUniformMatrix4fv to see the diff.
         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
         glUniform3f(uniColor, 0.3f, 0.3f, 0.3f);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glDisable(GL_STENCIL_TEST);
-#endif
+
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
