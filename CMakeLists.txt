@@ -56,6 +56,102 @@ add_definitions(
 	-D_CRT_SECURE_NO_WARNINGS
 )
 
+#############################
+# Tutorial open.gl.geometry_color_lines
+
+add_executable(open.gl.geometry_color_lines
+	open.gl.geometry_color_lines/geometry_color_lines.cpp
+)
+
+target_link_libraries(open.gl.geometry_color_lines
+	${ALL_LIBS}
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.geometry_color_lines PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_color_lines/")
+create_target_launcher(open.gl.geometry_color_lines WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_color_lines/")
+
+
+#############################
+# Tutorial open.gl.geometry_polylines
+
+add_executable(open.gl.geometry_polylines
+	open.gl.geometry_polylines/geometry_polylines.cpp
+)
+
+target_link_libraries(open.gl.geometry_polylines
+	${ALL_LIBS}
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.geometry_polylines PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_polylines/")
+create_target_launcher(open.gl.geometry_polylines WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_polylines/")
+
+
+
+#############################
+# Tutorial open.gl.geometry_circles
+
+add_executable(open.gl.geometry_circles
+	open.gl.geometry_circles/geometry_circles.cpp
+)
+
+target_link_libraries(open.gl.geometry_circles
+	${ALL_LIBS}
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.geometry_circles PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_circles/")
+create_target_launcher(open.gl.geometry_circles WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_circles/")
+
+
+#############################
+# Tutorial open.gl.geometry_lines
+
+add_executable(open.gl.geometry_lines
+	open.gl.geometry_lines/geometry_lines.cpp
+)
+
+target_link_libraries(open.gl.geometry_lines
+	${ALL_LIBS}
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.geometry_lines PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_lines/")
+create_target_launcher(open.gl.geometry_lines WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_lines/")
+
+
+#############################
+# Tutorial open.gl.geometry
+
+add_executable(open.gl.geometry
+	open.gl.geometry/geometry.cpp
+)
+
+target_link_libraries(open.gl.geometry
+	${ALL_LIBS}
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.geometry PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry/")
+create_target_launcher(open.gl.geometry WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry/")
+
+
+
+#############################
+# Tutorial open.gl.stencil_buffer_102
+
+add_executable(open.gl.stencil_buffer_102
+	open.gl.stencil_buffer_102/stencil_buffer_outline.cpp
+	common/shader.cpp
+	common/shader.hpp
+	
+	open.gl.stencil_buffer_102/TransformVertexShader.vertexshader
+	open.gl.stencil_buffer_102/TextureFragmentShader.fragmentshader
+)
+
+target_link_libraries(open.gl.stencil_buffer_102
+	${ALL_LIBS}
+	SOIL
+)
+# Xcode and Visual working directories
+set_target_properties(open.gl.stencil_buffer_102 PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.stencil_buffer_102/")
+create_target_launcher(open.gl.stencil_buffer_102 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.stencil_buffer_102/")
 
 
 #############################
@@ -912,12 +1008,52 @@ add_custom_command(
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.depthstencil${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.depthstencil/"
 )
 
+#=====================
+add_custom_command(
+   TARGET open.gl.geometry_polylines POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.geometry_polylines${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_polylines/"
+)
+
+
+#=====================
+add_custom_command(
+   TARGET open.gl.geometry_color_lines POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.geometry_color_lines${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_color_lines/"
+)
+
+
+#=====================
+add_custom_command(
+   TARGET open.gl.geometry_circles POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.geometry_circles${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_circles/"
+)
+
+
+#=====================
+add_custom_command(
+   TARGET open.gl.geometry_lines POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.geometry_lines${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry_lines/"
+)
+
+#=====================
+add_custom_command(
+   TARGET open.gl.geometry POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.geometry${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.geometry/"
+)
+
+#=====================
+add_custom_command(
+   TARGET open.gl.stencil_buffer_102 POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.stencil_buffer_102${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.stencil_buffer_102/"
+)
+#=====================
+
+#=====================
 add_custom_command(
    TARGET open.gl.stencil_buffer_101 POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/open.gl.stencil_buffer_101${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/open.gl.stencil_buffer_101/"
 )
-
-
+#=====================
 
 add_custom_command(
    TARGET tutorial02_red_triangle POST_BUILD
