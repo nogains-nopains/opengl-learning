@@ -175,7 +175,7 @@ int main( void )
     glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
 
     glm::mat4 view = glm::lookAt(
-        glm::vec3(2.5f, 2.5f, 2.5f),
+        glm::vec3(2.5f, 2.5f, 2.0f),
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 1.0f)
         );
@@ -196,7 +196,7 @@ int main( void )
         glm::mat4 model; //  creates a new 4-by-4 matrix , which is the identity matrix by default. 
         model = glm::rotate(
             model,
-            45.0f, //(GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 180.0f,
+           (GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 180.0f,
             glm::vec3(0.0f, 0.0f, 1.0f)  //  rotation transformation of  clock()/CLOCKS_PER_SEC *180 degrees around the Z axis.
         );
 
@@ -215,11 +215,11 @@ int main( void )
         glEnable(GL_STENCIL_TEST);
         
         // step 1 initialize the stencil buffer with the floor.
-        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); // disable colro buffer.
+        //glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); // disable colro buffer.
         glDepthMask(GL_FALSE);                               // disable depth buffer. Don't allow write to the depth buffer!
 
-        glStencilFunc(GL_NEVER, 1, 0xFF);           // NEVER pass stencil test, 
-        glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);  // replace the stencil buffer values to ref (1).
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);           // NEVER pass stencil test, 
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);  // replace the stencil buffer values to ref (1).
         glStencilMask(0xFF);                        // Let the setncil buffer free to write.
         glClear(GL_STENCIL_BUFFER_BIT);             // Clear stencil buffer by writing the default stencil value (0 by default).
 
@@ -240,9 +240,10 @@ int main( void )
         glStencilMask(0x00); // Don't allow write anything to stencil buffer, this can also be achieved by:
                              // glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
         
-        // stencil test: only pass stencil test at stencilVlaue == 1,
+        // stencil test: only pass stencil test at stencilVlaue == 1, (assuming depth test would pass.)
         // and write actual content to the depth and color buffer only at stencil shape locations.
         glStencilFunc(GL_EQUAL, 1, 0xFF); // Pass test if stencil value is 1
+
 
         model = glm::scale(
             glm::translate(model, glm::vec3(0, 0, -1)),
@@ -251,7 +252,7 @@ int main( void )
         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
         glUniform3f(uniColor, 0.3f, 0.3f, 0.3f);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
+           glUniform3f(uniColor, 1.0f, 1.0f, 1.0f);
         glDisable(GL_STENCIL_TEST);
 
         // Swap buffers
