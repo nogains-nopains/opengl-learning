@@ -130,6 +130,8 @@ int main( void )
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
 
+
+
     // Create VBO with point coordinates
     GLuint vbo;
     glGenBuffers(1, &vbo);
